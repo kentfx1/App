@@ -1,0 +1,606 @@
+ (cd "$(git rev-parse --show-toplevel)" && git apply --3way <<'EOF' 
+diff --git a/README.md b/README.md
+new file mode 100644
+index 0000000000000000000000000000000000000000..34967aaf434fbe8ccb13eeb09a959517470e64b0
+--- /dev/null
++++ b/README.md
+@@ -0,0 +1,36 @@
++# SoftChat (Expo + Firebase)
++
++A modern messaging app scaffold with:
++- Username login
++- Real-time chat state hooks (ready to wire Firestore listeners)
++- Online indicators
++- Read receipts
++- Voice note entry point
++- Push notification registration
++- Premium page ($1/month) + US SMS add-on architecture note (Twilio)
++
++## Run
++
++1. Install dependencies:
++   ```bash
++   npm install
++   ```
++2. Set Firebase env vars in `.env`:
++   - EXPO_PUBLIC_FIREBASE_API_KEY
++   - EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN
++   - EXPO_PUBLIC_FIREBASE_PROJECT_ID
++   - EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET
++   - EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
++   - EXPO_PUBLIC_FIREBASE_APP_ID
++3. Start:
++   ```bash
++   npm run start
++   ```
++
++## Structure
++- `src/pages`: Splash, Auth, Chats, Discover, Chat Room, Profile, Settings, Premium
++- `src/services/firebase.ts`: Firebase bootstrap
++- `src/services/notifications.ts`: Expo push registration
++
++## Premium SMS
++Use Firebase Cloud Functions + Twilio for provisioning and routing through a real US number.
+diff --git a/app.json b/app.json
+new file mode 100644
+index 0000000000000000000000000000000000000000..4152c64584c3873380b22178eb2f02afe58f874b
+--- /dev/null
++++ b/app.json
+@@ -0,0 +1,30 @@
++{
++  "expo": {
++    "name": "SoftChat",
++    "slug": "softchat",
++    "scheme": "softchat",
++    "version": "1.0.0",
++    "orientation": "portrait",
++    "icon": "./assets/icon.png",
++    "userInterfaceStyle": "dark",
++    "splash": {
++      "image": "./assets/splash.png",
++      "resizeMode": "contain",
++      "backgroundColor": "#060606"
++    },
++    "assetBundlePatterns": ["**/*"],
++    "ios": {
++      "supportsTablet": true,
++      "bundleIdentifier": "com.softchat.app"
++    },
++    "android": {
++      "package": "com.softchat.app"
++    },
++    "plugins": ["expo-notifications"],
++    "extra": {
++      "eas": {
++        "projectId": "softchat-project-id"
++      }
++    }
++  }
++}
+diff --git a/assets/icon.png b/assets/icon.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..657feda5e1cb78706757d1846c4767abd85c89f7
+GIT binary patch
+literal 68
+zcmeAS@N?(olHy`uVBq!ia0vp^j3CUx0wlM}@Gt=>Zci7-kcwN$fBwreFf%hTyz@Pf
+Q0u*NOboFyt=akR{0E7n)AOHXW
+
+literal 0
+HcmV?d00001
+
+diff --git a/assets/splash.png b/assets/splash.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..657feda5e1cb78706757d1846c4767abd85c89f7
+GIT binary patch
+literal 68
+zcmeAS@N?(olHy`uVBq!ia0vp^j3CUx0wlM}@Gt=>Zci7-kcwN$fBwreFf%hTyz@Pf
+Q0u*NOboFyt=akR{0E7n)AOHXW
+
+literal 0
+HcmV?d00001
+
+diff --git a/babel.config.js b/babel.config.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..9496d67d1a6c99648b90d8ee4acc04d39de5b854
+--- /dev/null
++++ b/babel.config.js
+@@ -0,0 +1,7 @@
++module.exports = function(api) {
++  api.cache(true);
++  return {
++    presets: ['babel-preset-expo'],
++    plugins: ['react-native-reanimated/plugin']
++  };
++};
+diff --git a/index.js b/index.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..e72342f7b1e2bd1a30526c909b6dfdc1704e8010
+--- /dev/null
++++ b/index.js
+@@ -0,0 +1,5 @@
++import 'react-native-gesture-handler';
++import { registerRootComponent } from 'expo';
++import App from './src/App';
++
++registerRootComponent(App);
+diff --git a/package.json b/package.json
+new file mode 100644
+index 0000000000000000000000000000000000000000..d72dd834e35b0af816571d44b398268cef8dec7b
+--- /dev/null
++++ b/package.json
+@@ -0,0 +1,38 @@
++{
++  "name": "softchat",
++  "version": "1.0.0",
++  "private": true,
++  "main": "index.js",
++  "scripts": {
++    "start": "expo start",
++    "android": "expo run:android",
++    "ios": "expo run:ios",
++    "web": "expo start --web",
++    "typecheck": "tsc --noEmit"
++  },
++  "dependencies": {
++    "@expo/vector-icons": "^14.0.2",
++    "@react-native-async-storage/async-storage": "^1.24.0",
++    "@react-navigation/bottom-tabs": "^6.6.1",
++    "@react-navigation/native": "^6.1.18",
++    "@react-navigation/native-stack": "^6.11.0",
++    "expo": "~53.0.12",
++    "expo-av": "~15.1.7",
++    "expo-blur": "~14.1.5",
++    "expo-device": "~7.1.4",
++    "expo-linear-gradient": "~14.1.5",
++    "expo-notifications": "~0.31.4",
++    "expo-status-bar": "~2.2.3",
++    "firebase": "^11.7.3",
++    "react": "19.0.0",
++    "react-native": "0.79.4",
++    "react-native-gesture-handler": "~2.24.0",
++    "react-native-reanimated": "~3.17.4",
++    "react-native-safe-area-context": "5.4.0",
++    "react-native-screens": "~4.11.1"
++  },
++  "devDependencies": {
++    "@types/react": "~19.0.10",
++    "typescript": "~5.8.3"
++  }
++}
+diff --git a/src/App.tsx b/src/App.tsx
+new file mode 100644
+index 0000000000000000000000000000000000000000..67673e2cd89f609053caa4db3997a6de87514eb6
+--- /dev/null
++++ b/src/App.tsx
+@@ -0,0 +1,14 @@
++import React, { useEffect } from 'react';
++import AppNavigator from '@/navigation/AppNavigator';
++import { AppProvider } from '@/context/AppContext';
++import { registerForPushNotificationsAsync } from '@/services/notifications';
++
++export default function App() {
++  useEffect(() => { registerForPushNotificationsAsync(); }, []);
++
++  return (
++    <AppProvider>
++      <AppNavigator />
++    </AppProvider>
++  );
++}
+diff --git a/src/components/Bubble.tsx b/src/components/Bubble.tsx
+new file mode 100644
+index 0000000000000000000000000000000000000000..a0b68ac34996d64b7bde767ebf8113b5964609ef
+--- /dev/null
++++ b/src/components/Bubble.tsx
+@@ -0,0 +1,21 @@
++import React from 'react';
++import { View, Text, StyleSheet } from 'react-native';
++import { Message } from '@/types';
++import { colors } from '@/constants/theme';
++
++export function Bubble({ message, mine }: { message: Message; mine: boolean }) {
++  return (
++    <View style={[styles.base, mine ? styles.mine : styles.theirs]}>
++      <Text style={styles.text}>{message.text || '🎤 Voice note'}</Text>
++      <Text style={styles.receipt}>{message.readBy.length > 1 ? 'Read' : 'Sent'}</Text>
++    </View>
++  );
++}
++
++const styles = StyleSheet.create({
++  base: { maxWidth: '78%', borderRadius: 24, marginVertical: 6, padding: 12 },
++  mine: { backgroundColor: '#2a2a2a', marginLeft: 'auto', borderTopRightRadius: 8 },
++  theirs: { backgroundColor: '#151515', borderWidth: 1, borderColor: '#2f2f2f', borderTopLeftRadius: 8 },
++  text: { color: colors.accent },
++  receipt: { color: colors.silverMuted, fontSize: 11, marginTop: 4 }
++});
+diff --git a/src/constants/theme.ts b/src/constants/theme.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..944dcd0e2c542c88348030a86224bb12d4c56152
+--- /dev/null
++++ b/src/constants/theme.ts
+@@ -0,0 +1,9 @@
++export const colors = {
++  bg: '#060606',
++  panel: '#121212',
++  softPanel: '#1a1a1a',
++  silver: '#c0c0c0',
++  silverMuted: '#8d8d8d',
++  accent: '#e6e6e6',
++  success: '#69f0ae'
++};
+diff --git a/src/context/AppContext.tsx b/src/context/AppContext.tsx
+new file mode 100644
+index 0000000000000000000000000000000000000000..ea4c43c280a962d25eca9bd049130419f8c8bf0a
+--- /dev/null
++++ b/src/context/AppContext.tsx
+@@ -0,0 +1,53 @@
++import React, { createContext, useContext, useMemo, useState } from 'react';
++import { Chat, Message, User } from '@/types';
++
++type AppState = {
++  currentUser?: User;
++  users: User[];
++  chats: Chat[];
++  messages: Record<string, Message[]>;
++  setCurrentUser: (u?: User) => void;
++  sendMessage: (chatId: string, payload: Omit<Message, 'id' | 'createdAt' | 'readBy'>) => void;
++  markRead: (chatId: string, userId: string) => void;
++};
++
++const initialUsers: User[] = [
++  { id: 'u1', username: 'Nova', isOnline: true },
++  { id: 'u2', username: 'LuxeWolf', isOnline: true },
++  { id: 'u3', username: 'Astra', isOnline: false }
++];
++
++const AppContext = createContext<AppState | null>(null);
++
++export function AppProvider({ children }: { children: React.ReactNode }) {
++  const [currentUser, setCurrentUser] = useState<User>();
++  const [users] = useState(initialUsers);
++  const [chats] = useState<Chat[]>([{ id: 'c1', title: 'Nova & LuxeWolf', participantIds: ['u1', 'u2'] }]);
++  const [messages, setMessages] = useState<Record<string, Message[]>>({ c1: [] });
++
++  const sendMessage: AppState['sendMessage'] = (chatId, payload) => {
++    setMessages((prev) => ({
++      ...prev,
++      [chatId]: [
++        ...(prev[chatId] ?? []),
++        { ...payload, id: Math.random().toString(36), createdAt: Date.now(), readBy: [payload.senderId] }
++      ]
++    }));
++  };
++
++  const markRead = (chatId: string, userId: string) => {
++    setMessages((prev) => ({
++      ...prev,
++      [chatId]: (prev[chatId] ?? []).map((m) => ({ ...m, readBy: m.readBy.includes(userId) ? m.readBy : [...m.readBy, userId] }))
++    }));
++  };
++
++  const value = useMemo(() => ({ currentUser, users, chats, messages, setCurrentUser, sendMessage, markRead }), [currentUser, users, chats, messages]);
++  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
++}
++
++export function useApp() {
++  const ctx = useContext(AppContext);
++  if (!ctx) throw new Error('useApp must be used within AppProvider');
++  return ctx;
++}
+diff --git a/src/navigation/AppNavigator.tsx b/src/navigation/AppNavigator.tsx
+new file mode 100644
+index 0000000000000000000000000000000000000000..95a9b97ccfdecf7abb2195ae8f2f4189b729c98c
+--- /dev/null
++++ b/src/navigation/AppNavigator.tsx
+@@ -0,0 +1,43 @@
++import React from 'react';
++import { NavigationContainer, DarkTheme } from '@react-navigation/native';
++import { createNativeStackNavigator } from '@react-navigation/native-stack';
++import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
++import SplashScreen from '@/pages/SplashScreen';
++import AuthScreen from '@/pages/AuthScreen';
++import ChatsScreen from '@/pages/ChatsScreen';
++import DiscoverScreen from '@/pages/DiscoverScreen';
++import ChatRoomScreen from '@/pages/ChatRoomScreen';
++import ProfileScreen from '@/pages/ProfileScreen';
++import SettingsScreen from '@/pages/SettingsScreen';
++import PremiumScreen from '@/pages/PremiumScreen';
++import { useApp } from '@/context/AppContext';
++
++const Stack = createNativeStackNavigator();
++const Tab = createBottomTabNavigator();
++
++function MainTabs() {
++  return (
++    <Tab.Navigator screenOptions={{ headerShown: false, tabBarStyle: { backgroundColor: '#0b0b0b', borderTopColor: '#1f1f1f' }, tabBarActiveTintColor: '#f2f2f2' }}>
++      <Tab.Screen name='Chats' component={ChatsScreen} />
++      <Tab.Screen name='Discover' component={DiscoverScreen} />
++      <Tab.Screen name='Profile' component={ProfileScreen} />
++      <Tab.Screen name='Settings' component={SettingsScreen} />
++      <Tab.Screen name='Premium' component={PremiumScreen} />
++    </Tab.Navigator>
++  );
++}
++
++export default function AppNavigator() {
++  const { currentUser } = useApp();
++  return (
++    <NavigationContainer theme={DarkTheme}>
++      <Stack.Navigator screenOptions={{ headerStyle: { backgroundColor: '#0a0a0a' }, headerTintColor: '#efefef', contentStyle: { backgroundColor: '#060606' } }}>
++        <Stack.Screen name='Splash' component={SplashScreen} options={{ headerShown: false }} />
++        {!currentUser ? <Stack.Screen name='Auth' component={AuthScreen} /> : <>
++          <Stack.Screen name='Home' component={MainTabs} options={{ headerShown: false }} />
++          <Stack.Screen name='ChatRoom' component={ChatRoomScreen} options={{ title: 'SoftChat Room' }} />
++        </>}
++      </Stack.Navigator>
++    </NavigationContainer>
++  );
++}
+diff --git a/src/pages/AuthScreen.tsx b/src/pages/AuthScreen.tsx
+new file mode 100644
+index 0000000000000000000000000000000000000000..e741d0b431ffdd0489d22484bbed9253dbf56c49
+--- /dev/null
++++ b/src/pages/AuthScreen.tsx
+@@ -0,0 +1,27 @@
++import React, { useState } from 'react';
++import { View, TextInput, Pressable, Text, StyleSheet } from 'react-native';
++import { useApp } from '@/context/AppContext';
++
++export default function AuthScreen() {
++  const { users, setCurrentUser } = useApp();
++  const [username, setUsername] = useState('');
++
++  const login = () => {
++    const found = users.find((u) => u.username.toLowerCase() === username.toLowerCase()) ?? { id: `u_${Date.now()}`, username, isOnline: true };
++    setCurrentUser(found);
++  };
++
++  return (
++    <View style={styles.container}>
++      <TextInput value={username} onChangeText={setUsername} placeholder="Username" placeholderTextColor="#666" style={styles.input} />
++      <Pressable style={styles.btn} onPress={login}><Text style={styles.btnText}>Continue</Text></Pressable>
++    </View>
++  );
++}
++
++const styles = StyleSheet.create({
++  container: { flex: 1, justifyContent: 'center', padding: 20, backgroundColor: '#060606' },
++  input: { backgroundColor: '#101010', color: '#eee', borderRadius: 14, padding: 14, marginBottom: 12, borderColor: '#2b2b2b', borderWidth: 1 },
++  btn: { backgroundColor: '#dbdbdb', borderRadius: 14, padding: 14, alignItems: 'center' },
++  btnText: { color: '#050505', fontWeight: '700' }
++});
+diff --git a/src/pages/ChatRoomScreen.tsx b/src/pages/ChatRoomScreen.tsx
+new file mode 100644
+index 0000000000000000000000000000000000000000..9654203ecd1ed7d406c6c1f17522ff25e4912683
+--- /dev/null
++++ b/src/pages/ChatRoomScreen.tsx
+@@ -0,0 +1,34 @@
++import React, { useState } from 'react';
++import { View, TextInput, Pressable, Text, FlatList } from 'react-native';
++import { Audio } from 'expo-av';
++import { useApp } from '@/context/AppContext';
++import { Bubble } from '@/components/Bubble';
++
++export default function ChatRoomScreen({ route }: any) {
++  const { chatId } = route.params;
++  const { currentUser, messages, sendMessage } = useApp();
++  const [text, setText] = useState('');
++
++  const onSend = () => {
++    if (!currentUser || !text.trim()) return;
++    sendMessage(chatId, { senderId: currentUser.id, text });
++    setText('');
++  };
++
++  const fakeVoiceNote = async () => {
++    await Audio.requestPermissionsAsync();
++    if (!currentUser) return;
++    sendMessage(chatId, { senderId: currentUser.id, voiceUri: 'local://voice-note.m4a' });
++  };
++
++  return (
++    <View style={{ flex: 1, backgroundColor: '#050505', padding: 12 }}>
++      <FlatList data={messages[chatId] || []} keyExtractor={(m) => m.id} renderItem={({ item }) => <Bubble message={item} mine={item.senderId === currentUser?.id} />} />
++      <View style={{ flexDirection: 'row', gap: 8 }}>
++        <TextInput value={text} onChangeText={setText} placeholder='Type message' placeholderTextColor='#777' style={{ flex: 1, backgroundColor: '#131313', color: '#eee', borderRadius: 18, paddingHorizontal: 14 }} />
++        <Pressable onPress={fakeVoiceNote} style={{ backgroundColor: '#222', borderRadius: 18, padding: 12 }}><Text style={{ color: '#ddd' }}>🎤</Text></Pressable>
++        <Pressable onPress={onSend} style={{ backgroundColor: '#ddd', borderRadius: 18, padding: 12 }}><Text>Send</Text></Pressable>
++      </View>
++    </View>
++  );
++}
+diff --git a/src/pages/ChatsScreen.tsx b/src/pages/ChatsScreen.tsx
+new file mode 100644
+index 0000000000000000000000000000000000000000..12509246125744f3481a2af8aeeda25b5a31197e
+--- /dev/null
++++ b/src/pages/ChatsScreen.tsx
+@@ -0,0 +1,13 @@
++import React from 'react';
++import { View, Text, FlatList, Pressable } from 'react-native';
++import { useApp } from '@/context/AppContext';
++
++export default function ChatsScreen({ navigation }: any) {
++  const { chats } = useApp();
++  return <FlatList style={{ flex: 1, backgroundColor: '#060606' }} data={chats} keyExtractor={(c) => c.id} renderItem={({ item }) => (
++    <Pressable onPress={() => navigation.navigate('ChatRoom', { chatId: item.id })} style={{ padding: 16, borderBottomWidth: 1, borderBottomColor: '#1f1f1f' }}>
++      <Text style={{ color: '#eaeaea', fontSize: 16 }}>{item.title}</Text>
++      <Text style={{ color: '#818181' }}>{item.lastMessage ?? 'Start a premium conversation'}</Text>
++    </Pressable>
++  )} />;
++}
+diff --git a/src/pages/DiscoverScreen.tsx b/src/pages/DiscoverScreen.tsx
+new file mode 100644
+index 0000000000000000000000000000000000000000..5ed939d5a20407cbe3a8c40eaf1e11c0245a8b1f
+--- /dev/null
++++ b/src/pages/DiscoverScreen.tsx
+@@ -0,0 +1,13 @@
++import React from 'react';
++import { FlatList, Text, View } from 'react-native';
++import { useApp } from '@/context/AppContext';
++
++export default function DiscoverScreen() {
++  const { users } = useApp();
++  return <FlatList style={{ flex: 1, backgroundColor: '#060606' }} data={users} keyExtractor={(u) => u.id} renderItem={({ item }) => (
++    <View style={{ padding: 16, borderBottomWidth: 1, borderBottomColor: '#1f1f1f' }}>
++      <Text style={{ color: '#efefef' }}>@{item.username}</Text>
++      <Text style={{ color: item.isOnline ? '#69f0ae' : '#747474' }}>{item.isOnline ? 'Online' : 'Offline'}</Text>
++    </View>
++  )} />;
++}
+diff --git a/src/pages/PremiumScreen.tsx b/src/pages/PremiumScreen.tsx
+new file mode 100644
+index 0000000000000000000000000000000000000000..3ab967b4e629d82a794f7daa64f7514c2a9b60be
+--- /dev/null
++++ b/src/pages/PremiumScreen.tsx
+@@ -0,0 +1,11 @@
++import React from 'react';
++import { View, Text, Pressable } from 'react-native';
++
++export default function PremiumScreen() {
++  return <View style={{ flex: 1, backgroundColor: '#060606', padding: 20, justifyContent: 'center' }}>
++    <Text style={{ color: '#f0f0f0', fontSize: 30, fontWeight: '700' }}>SoftChat Premium</Text>
++    <Text style={{ color: '#a0a0a0', marginVertical: 12 }}>$1/month for priority routing, cinematic UI effects, and faster media delivery.</Text>
++    <Text style={{ color: '#a0a0a0', marginBottom: 12 }}>US SMS Number Add-on: integrates a real US number using Firebase + Twilio.</Text>
++    <Pressable style={{ backgroundColor: '#ddd', borderRadius: 12, padding: 12, alignItems: 'center' }}><Text style={{ color: '#111', fontWeight: '700' }}>Upgrade for $1</Text></Pressable>
++  </View>;
++}
+diff --git a/src/pages/ProfileScreen.tsx b/src/pages/ProfileScreen.tsx
+new file mode 100644
+index 0000000000000000000000000000000000000000..add238b54f404171484145a0c39ee1b6c1f32da3
+--- /dev/null
++++ b/src/pages/ProfileScreen.tsx
+@@ -0,0 +1,11 @@
++import React from 'react';
++import { View, Text } from 'react-native';
++import { useApp } from '@/context/AppContext';
++
++export default function ProfileScreen() {
++  const { currentUser } = useApp();
++  return <View style={{ flex: 1, backgroundColor: '#060606', padding: 20 }}>
++    <Text style={{ color: '#efefef', fontSize: 24 }}>@{currentUser?.username ?? 'Guest'}</Text>
++    <Text style={{ color: '#9f9f9f', marginTop: 8 }}>Status: Elite Member</Text>
++  </View>;
++}
+diff --git a/src/pages/SettingsScreen.tsx b/src/pages/SettingsScreen.tsx
+new file mode 100644
+index 0000000000000000000000000000000000000000..00d9edc72f7f0b19e3c580cb65ad2b51900ad01a
+--- /dev/null
++++ b/src/pages/SettingsScreen.tsx
+@@ -0,0 +1,8 @@
++import React from 'react';
++import { View, Text } from 'react-native';
++
++export default function SettingsScreen() {
++  return <View style={{ flex: 1, backgroundColor: '#060606', padding: 20 }}>
++    <Text style={{ color: '#e7e7e7', fontSize: 18 }}>Notifications, privacy, and chat quality</Text>
++  </View>;
++}
+diff --git a/src/pages/SplashScreen.tsx b/src/pages/SplashScreen.tsx
+new file mode 100644
+index 0000000000000000000000000000000000000000..59212d73beff30bf166aa2906c9fe5a03bcb8b8e
+--- /dev/null
++++ b/src/pages/SplashScreen.tsx
+@@ -0,0 +1,18 @@
++import React from 'react';
++import { View, Text, StyleSheet } from 'react-native';
++import { LinearGradient } from 'expo-linear-gradient';
++
++export default function SplashScreen() {
++  return (
++    <LinearGradient colors={['#040404', '#111']} style={styles.container}>
++      <Text style={styles.logo}>SoftChat</Text>
++      <Text style={styles.tag}>Dark. Fast. Premium.</Text>
++    </LinearGradient>
++  );
++}
++
++const styles = StyleSheet.create({
++  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
++  logo: { color: '#e8e8e8', fontSize: 42, fontWeight: '700' },
++  tag: { color: '#9d9d9d', marginTop: 8 }
++});
+diff --git a/src/services/firebase.ts b/src/services/firebase.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..60022654527d787cb80180cedd03e62afd021115
+--- /dev/null
++++ b/src/services/firebase.ts
+@@ -0,0 +1,16 @@
++import { initializeApp } from 'firebase/app';
++import { getAuth } from 'firebase/auth';
++import { getFirestore } from 'firebase/firestore';
++
++const firebaseConfig = {
++  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
++  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
++  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
++  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET,
++  messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
++  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID
++};
++
++const app = initializeApp(firebaseConfig);
++export const auth = getAuth(app);
++export const db = getFirestore(app);
+diff --git a/src/services/notifications.ts b/src/services/notifications.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..280bfdbac545d4e90ba71291f693a66918330421
+--- /dev/null
++++ b/src/services/notifications.ts
+@@ -0,0 +1,19 @@
++import * as Notifications from 'expo-notifications';
++import * as Device from 'expo-device';
++
++export async function registerForPushNotificationsAsync() {
++  if (!Device.isDevice) return null;
++
++  const { status: existingStatus } = await Notifications.getPermissionsAsync();
++  let finalStatus = existingStatus;
++
++  if (existingStatus !== 'granted') {
++    const { status } = await Notifications.requestPermissionsAsync();
++    finalStatus = status;
++  }
++
++  if (finalStatus !== 'granted') return null;
++
++  const token = await Notifications.getExpoPushTokenAsync();
++  return token.data;
++}
+diff --git a/src/types/index.ts b/src/types/index.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..e46c2871773b667d6828f00995f047416658b650
+--- /dev/null
++++ b/src/types/index.ts
+@@ -0,0 +1,12 @@
++export type User = { id: string; username: string; isOnline: boolean; phone?: string };
++
++export type Message = {
++  id: string;
++  text?: string;
++  senderId: string;
++  createdAt: number;
++  readBy: string[];
++  voiceUri?: string;
++};
++
++export type Chat = { id: string; title: string; participantIds: string[]; lastMessage?: string };
+diff --git a/tsconfig.json b/tsconfig.json
+new file mode 100644
+index 0000000000000000000000000000000000000000..6b574f4ca32696ca12b4e69d00f1a4b05806c758
+--- /dev/null
++++ b/tsconfig.json
+@@ -0,0 +1,10 @@
++{
++  "extends": "expo/tsconfig.base",
++  "compilerOptions": {
++    "strict": true,
++    "baseUrl": ".",
++    "paths": {
++      "@/*": ["src/*"]
++    }
++  }
++}
+ 
+EOF
+)
